@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	
+	Spring Context (main)
+	
+	
+	This context is responsible for wiring application wide infra-structure services as well as application
+	defined specifica services and beans.
+	
+	The Spring Framework provides the automatic compling of components described on this context. Supported
+	by the RegistryManager class, witch provides namespace based context, the GRO Plus application is enabled
+	with a powerful, reliable and easy to maintain infra-struture and basic components integration.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/jee
+	http://www.springframework.org/schema/jee/spring-jee.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util.xsd
+	http://www.springframework.org/schema/jdbc
+	http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+	<description>JLabs Tests Context</description>
+     
+    <context:annotation-config />
+    
+    <!-- 
+        This tag component-scan will register all candidate classes implementing Business interface
+        and annotated as @Component, @Repository, @Service or @Controller as spring beans 
+        in the spring registry.
+     -->    
+    <context:component-scan base-package="br.com.jlabs" />
+
+    <bean id="defaultDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:jlabstestdb;DB_CLOSE_DELAY=-1"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+	<bean id="spyDataSource" class="com.p6spy.engine.spy.P6DataSource">
+		<constructor-arg>
+			<ref local="defaultDataSource" />
+		</constructor-arg>
+	</bean>
+
+    <bean id="txDataSource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+         <constructor-arg ref="spyDataSource"/>
+    </bean>
+
+    <bean id="sessionFactory"
+        class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+
+        <property name="dataSource" ref="txDataSource" />
+
+        <property name="packagesToScan">
+            <list>
+                <value>br.com.jlabs.model</value>
+            </list>
+        </property>
+
+        <property name="hibernateProperties">
+            <map>
+                <entry key="hibernate.bytecode.use_reflection_optimizer" value="true" />
+                <entry key="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider" />
+                <entry key="hibernate.cache.use_query_cache" value="true" />
+                <entry key="hibernate.cache.use_second_level_cache" value="true" />
+
+                <entry key="hibernate.cache.provider_configuration_file_resource_path" value="ehcache-model.xml" />
+
+                <entry key="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+                <entry key="hibernate.jdbc.fetch_size" value="200" />
+                <entry key="hibernate.jdbc.use_get_generated_keys" value="true" />
+                <entry key="hibernate.max_fetch_depth" value="100" />
+                <entry key="hibernate.show_sql" value="false" />
+
+                <!-- 
+                Context provided with AOP by SpringContext
+                <entry key="hibernate.current_session_context_class" value="thread" />
+                 -->
+
+            </map>
+        </property>
+        
+    </bean> 
+
+    <bean id="hibernateTransactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+       <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <!-- enable the configuration of transactional behavior based on annotations -->
+    <tx:annotation-driven transaction-manager="hibernateTransactionManager" proxy-target-class="false" />
+
+    <jdbc:initialize-database data-source="defaultDataSource" enabled="true" ignore-failures="ALL">
+        <jdbc:script location="classpath:ddl.sql" />
+        <jdbc:script location="classpath:dml.sql" />
+    </jdbc:initialize-database>
+
+</beans>

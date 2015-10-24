@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	$Id;$
+	
+	EHCache Cache configuration for use with Application components
+	and services.
+-->
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ehcache.xsd">
+	<!-- 
+		Sets the path to the directory where cache .data files are created.
+
+		If the path is a Java System Property it is replaced by its value in the running VM.
+	-->
+	<diskStore path="java.io.tmpdir/jlabs/model"/>
+
+ 	<!--
+		Default Cache configuration. These will applied to caches programmatically created through
+       	the CacheManager.
+	-->
+	<defaultCache
+			maxElementsInMemory="100"
+        	eternal="false"
+        	timeToIdleSeconds="120"
+        	timeToLiveSeconds="120"
+        	overflowToDisk="true"
+        	diskPersistent="false"
+        	diskExpiryThreadIntervalSeconds="30"/>
+	<!-- 
+		Cache to be used for Locator Service
+	 -->			
+	<cache 	name="br.com.jlabs.model"
+	      	eternal="false"
+			maxElementsInMemory="100"
+        	overflowToDisk="false"
+			timeToIdleSeconds="120"
+			timeToLiveSeconds="120"
+			diskPersistent="false"
+			diskExpiryThreadIntervalSeconds="30"/>
+
+</ehcache>
