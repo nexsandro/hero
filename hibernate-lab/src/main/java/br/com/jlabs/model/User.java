@@ -15,8 +15,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.OptimisticLockType;
 
 /**
@@ -25,7 +23,6 @@ import org.hibernate.annotations.OptimisticLockType;
  */
 @Entity
 @Table(name = "user")
-//@Cache(region = "br.com.jlabs.model", usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @org.hibernate.annotations.Entity(optimisticLock = OptimisticLockType.VERSION)
 public class User implements Serializable {
 
