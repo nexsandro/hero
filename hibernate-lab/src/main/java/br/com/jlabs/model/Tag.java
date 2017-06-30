@@ -2,7 +2,10 @@ package br.com.jlabs.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -11,55 +14,52 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "role")
-public class Role {
+@Table(name = "tb_tag")
+public class Tag {
 
+	/**
+	 * Tag
+	 */
 	@Id
-	@Column(name = "cd_role")
-	private String id;
+	@GeneratedValue(generator = "SE_TAG", strategy = GenerationType.AUTO)
+	@SequenceGenerator(name = "SE_TAG", sequenceName = "SE_TAG", initialValue = 1, allocationSize = 1)
+	@Column(name = "cd_tag", nullable = false, length = 10, unique = true)
+	private Integer id;
 	
-	@Column(name = "no_role")
+	/**
+	 * Name
+	 */
+	@Column(name = "no_tag", nullable = false, length = 255)
 	private String name;
 
 	/**
-	 * Default Constructor. 
+	 * Default constructor
 	 */
-	public Role() {
+	public Tag() {
 		super();
 	}
 	
 	/**
-	 * Constructor with id for load like commands. 
-	 * @param id
-	 */
-	public Role(String id) {
-		super();
-		this.id = id;
-	}
-
-	/**
-	 * Constructor with fields.
 	 * @param id
 	 * @param name
 	 */
-	public Role(String id, String name) {
+	public Tag(Integer id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
 	}
 
-
 	/**
 	 * @return the id
 	 */
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -75,6 +75,14 @@ public class Role {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Tag [id=" + id + ", name=" + name + "]";
 	}
 
 	/* (non-Javadoc)
@@ -99,21 +107,13 @@ public class Role {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Role other = (Role) obj;
+		Tag other = (Tag) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "Role [id=" + id + ", name=" + name + "]";
 	}
 	
 }

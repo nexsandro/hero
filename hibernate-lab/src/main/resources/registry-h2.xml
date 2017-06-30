@@ -51,7 +51,7 @@
 
     <bean id="defaultDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.h2.Driver"/>
-        <property name="url" value="jdbc:h2:mem:jlabstestdb;DB_CLOSE_DELAY=-1"/>
+        <property name="url" value="jdbc:h2:file:///tmp/dbfiles/labodb;DB_CLOSE_DELAY=-1"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
     </bean>
@@ -86,7 +86,7 @@
 
                 <entry key="hibernate.cache.provider_configuration_file_resource_path" value="ehcache-model.xml" />
 
-                <entry key="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+                <entry key="hibernate.dialect" value="br.com.jlabs.core.orm.H2Dialect" />
                 <entry key="hibernate.jdbc.fetch_size" value="200" />
                 <entry key="hibernate.jdbc.use_get_generated_keys" value="true" />
                 <entry key="hibernate.max_fetch_depth" value="100" />
@@ -109,7 +109,7 @@
     <!-- enable the configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="hibernateTransactionManager" proxy-target-class="false" />
 
-    <jdbc:initialize-database data-source="defaultDataSource" enabled="true">
+    <jdbc:initialize-database data-source="defaultDataSource" enabled="true" ignore-failures="ALL">
         <jdbc:script location="classpath:ddl.sql" />
         <jdbc:script location="classpath:dml.sql" />
     </jdbc:initialize-database>

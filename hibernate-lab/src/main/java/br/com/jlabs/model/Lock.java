@@ -13,7 +13,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "lock")
+@Table(name = "LOCK")
 public class Lock implements Serializable {
 
 	/**

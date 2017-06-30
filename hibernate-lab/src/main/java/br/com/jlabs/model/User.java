@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -22,7 +23,7 @@ import org.hibernate.annotations.OptimisticLockType;
  *
  */
 @Entity
-@Table(name = "user")
+@Table(name = "tb_user")
 @org.hibernate.annotations.Entity(optimisticLock = OptimisticLockType.VERSION)
 public class User implements Serializable {
 
@@ -42,7 +43,11 @@ public class User implements Serializable {
 	@Column(name = "nu_vers")
 	private Integer version;
 	
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "sq_mngr", nullable = true)
+	private User manager;
+	
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_role",
 	    joinColumns=@JoinColumn(name = "cd_user", referencedColumnName = "cd_user"),
 	    inverseJoinColumns=@JoinColumn(name = "cd_role", referencedColumnName = "cd_role"))
@@ -53,6 +58,14 @@ public class User implements Serializable {
 		this.version = 1;
 	}
 	
+	/**
+	 * @param id
+	 */
+	public User(String id) {
+		super();
+		this.id = id;
+	}
+
 	public User(String id, String name) {
 		this();
 		this.id = id;
@@ -87,6 +100,20 @@ public class User implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	/**
+	 * @return the manager
+	 */
+	public User getManager() {
+		return manager;
+	}
+
+	/**
+	 * @param manager the manager to set
+	 */
+	public void setManager(User manager) {
+		this.manager = manager;
 	}
 
 	/**
@@ -128,7 +155,7 @@ public class User implements Serializable {
 		
 		roles.add(role);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -165,7 +192,8 @@ public class User implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", version=" + version + ", roles=" + roles + "]";
+		return "User [id=" + id + ", name=" + name + ", version=" + version + ", manager=" + manager + ", roles="
+				+ roles + "]";
 	}
 
 }

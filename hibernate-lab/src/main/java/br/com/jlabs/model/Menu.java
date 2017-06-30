@@ -3,10 +3,16 @@
  */
 package br.com.jlabs.model;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -24,8 +30,19 @@ public class Menu {
 	@Column(name = "no_menu", nullable = false)
 	private String name;
 	
-	@ManyToOne
+	@ManyToOne()
+	@JoinColumn(name = "cd_prnt", referencedColumnName = "cd_menu")
 	private Menu parent;
+	
+	@OneToMany(mappedBy = "parent")
+	private Set<Menu> children;
+
+	@ManyToMany(targetEntity = Role.class)
+	@JoinTable(
+			name = "menu_role",
+			joinColumns = @JoinColumn(name = "cx_menu", referencedColumnName = "cd_menu"),
+			inverseJoinColumns = @JoinColumn(name = "cx_role", referencedColumnName = "cd_role"))
+	private Set<Role> roles;
 	
 	/**
 	 * 

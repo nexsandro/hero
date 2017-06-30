@@ -9,6 +9,8 @@ import org.hibernate.classic.Session;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.jlabs.model.User;
@@ -22,12 +24,17 @@ public class CadastrarUserBusinessImpl implements CadastrarUserBusiness {
 	/* (non-Javadoc)
 	 * @see br.com.jlabs.business.uc_0101.CadastrarUserBusiness#save(br.com.jlabs.model.User)
 	 */
-	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
 	public User save(User user) {
 		
 		Session session = sessionFactory.getCurrentSession();
+		
+		if (user.getManager() != null) {
+			user.setManager((User) session.load(User.class, user.getManager().getId()));
+		}
+		
 		session.saveOrUpdate(user);
+		session.flush();
 		
 		return user;
 		
@@ -35,7 +42,6 @@ public class CadastrarUserBusinessImpl implements CadastrarUserBusiness {
 	/* (non-Javadoc)
 	 * @see br.com.jlabs.business.uc_0101.CadastrarUserBusiness#save(br.com.jlabs.model.User)
 	 */
-	@Override
 	@Transactional
 	public boolean lockVersioned(User user) {
 		
@@ -59,6 +65,7 @@ public class CadastrarUserBusinessImpl implements CadastrarUserBusiness {
 		return (List<User>) session
 				.createCriteria(User.class)
 				.setFetchMode("roles", FetchMode.JOIN)
+				.setFetchMode("manager", FetchMode.JOIN)
 				.list();
 		
 	}
@@ -70,7 +77,7 @@ public class CadastrarUserBusinessImpl implements CadastrarUserBusiness {
 		return (User) session.get(User.class, id);
 
 	}
-	@Override
+
 	public User create(User user) {
 		// TODO Auto-generated method stub
 		return null;
