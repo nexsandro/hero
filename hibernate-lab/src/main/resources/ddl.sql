@@ -49,6 +49,6 @@ alter table user_role add constraint fk_user foreign key (cd_user) references tb
 alter table user_role add constraint fk_role foreign key (cd_role) references role (cd_role);
 
 create table TB_MDIC_KEYW (SQ_KEYW int identity not null, TX_DESC varchar(255) null, CD_KEY varchar(255) not null, NU_VERS int not null, primary key (SQ_KEYW));
-create table TB_MDIC_TERM (SQ_TERM int identity not null, tx_text varchar(255) null, SQ_KEYW int null, primary key (SQ_TERM));
+create table TB_MDIC_TERM (SQ_TERM int identity not null, tx_text varchar(255) null, SQ_KEYW int not null, NU_VERS int not null, primary key (SQ_TERM));
 alter table TB_MDIC_TERM add constraint FKD18D3F9D31E19234 foreign key (SQ_KEYW) references TB_MDIC_KEYW;
 

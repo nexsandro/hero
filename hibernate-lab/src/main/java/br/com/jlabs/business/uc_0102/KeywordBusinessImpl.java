@@ -3,6 +3,8 @@
  */
 package br.com.jlabs.business.uc_0102;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -22,34 +24,42 @@ public class KeywordBusinessImpl implements KeywordBusiness {
 	@Autowired
 	public CrudBusiness crud;
 	
+	@Autowired
+	public TermBusiness termBusiness;
+	
 	/* (non-Javadoc)
 	 * @see br.com.jlabs.business.uc_0102.KeywordBusiness#save(br.com.jlabs.model.Keyword)
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void save(Keyword keyword) {
 		
-		crud.save(keyword);
+		Set<Term> terms = keyword.getTerms();
+		keyword.setTerms(null);
 		
-		for(Term term : keyword.getTerms()) {
-			crud.save(term);
+		crud.save(keyword);
+		for(Term term : terms) {
+			keyword.addTerm(term);
+			termBusiness.save(term);
 		}
 		
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void update(Keyword keyword) {
-
-		Keyword entity = crud.read(Keyword.class, keyword.getId());
-		
-		for (Term term : keyword.getTerms()) {
-			if (term.getId() != null)
-				crud.update(term);
-			else
-				crud.save(term);
-		}
-		
-		entity.setTerms(keyword.getTerms());
-
+//		
+//		Keyword entity = crud.read(Keyword.class, keyword.getId());
+//		for(Term term : keyword.getTerms()) {
+//			if (term.getId() == null) {
+//				crud.save(term);
+//			} else {
+//				crud.merge(term);
+//			}
+//		}
+//		
+//		entity.getTerms().retainAll(keyword.getTerms());
+//		entity.setDescription(keyword.getDescription());
+//		entity.setVersion(keyword.getVersion());
+		crud.update(keyword);
 	}
 
 }

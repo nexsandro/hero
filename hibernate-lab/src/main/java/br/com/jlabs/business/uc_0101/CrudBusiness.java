@@ -10,4 +10,10 @@ public interface CrudBusiness {
 
 	void update(Object entity);
 
+	void delete(Object entity);
+
+	void evict(Object entity);
+
+	void merge(Object entity);
+
 }

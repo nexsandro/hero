@@ -32,4 +32,18 @@ public class CrudBusinessImpl implements CrudBusiness {
 		sessionFactory.getCurrentSession().update(entity);
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void merge(Object entity) {
+		sessionFactory.getCurrentSession().merge(entity);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void delete(Object entity) {
+		sessionFactory.getCurrentSession().delete(entity);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void evict(Object entity) {
+		sessionFactory.getCurrentSession().evict(entity);
+	}
 }

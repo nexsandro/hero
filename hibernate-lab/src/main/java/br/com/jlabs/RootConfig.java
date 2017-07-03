@@ -25,6 +25,8 @@ import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import br.com.jlabs.core.orm.H2Dialect;
+
 /**
  * @author sebastiao.santos
  *
@@ -46,7 +48,7 @@ public class RootConfig {
 	public TransactionAwareDataSourceProxy orDataSource() {
 		BasicDataSource ds = new BasicDataSource();
 		ds.setDriverClassName("org.h2.Driver");
-		ds.setUrl("jdbc:h2:mem:jlabstestdb;DB_CLOSE_DELAY=-1");
+		ds.setUrl("jdbc:h2:mem:jlabstestdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
 		ds.setUsername("sa");
 		ds.setPassword("");
 		
@@ -93,7 +95,7 @@ public class RootConfig {
         properties.put("hibernate.cache.provider_configuration_file_resource_path", "ehcache-model.xml");
         properties.put("hibernate.cache.use_query_cache", "true");
         properties.put("hibernate.cache.use_second_level_cache", "true");
-        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect" );
+        properties.put("hibernate.dialect", H2Dialect.class.getCanonicalName() );
         properties.put("hibernate.jdbc.fetch_size", "200");
         properties.put("hibernate.jdbc.use_get_generated_keys", "true");
         properties.put("hibernate.max_fetch_depth", "100");

@@ -38,22 +38,28 @@ public class HibernateTest {
 
 	
 	private static void test2(AnnotationConfigApplicationContext context) {
-		KeywordBusiness crud = context.getBean(KeywordBusiness.class);
+		KeywordBusiness keywordBusiness = context.getBean(KeywordBusiness.class);
 		
 		try {
 			
-			Keyword keyw = new Keyword("terms.term1", null, 1, null);
+			Keyword keyw = new Keyword("terms.term1", "Description 1", 1, null);
 			
 			String[] translations = new String[] {"Tradução", "Translation", "Traducción"};
 			for(String translation : translations) {
 				keyw.addTerm(new Term(keyw, translation));
 			}
 
-			crud.save(keyw);
+			System.out.println("--------------------------------------- saving ---------------------------------------");
+			keywordBusiness.save(keyw);
 			
-			keyw.getTerms().remove(keyw.getTerms().iterator().next());
-			keyw.getTerms().add(new Term(keyw, "New Term"));
-			crud.update(keyw);
+			Term itemToRemove = keyw.getTerms().iterator().next();
+			keyw.getTerms().remove(itemToRemove);
+			keyw.getTerms().add(new Term(keyw, "Tracductcion Errada"));
+			System.out.println("--------------------------------------- updating ---------------------------------------");
+			keyw.setDescription("Description 2");
+			keywordBusiness.update(keyw);
+			
+			System.out.println("Keyword at end: " + keyw.getTerms());
 			
 		} catch(Exception e) { 
 			e.printStackTrace();

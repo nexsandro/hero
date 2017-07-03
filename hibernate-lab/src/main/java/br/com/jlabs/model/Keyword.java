@@ -40,7 +40,7 @@ public class Keyword {
 	@Column(name = "NU_VERS", nullable = false)
 	private Integer version;
 
-	@OneToMany(mappedBy = "keyword")
+	@OneToMany(mappedBy = "keyword", orphanRemoval = true)
 	private Set<Term> terms;
 	
 	public Keyword() {
@@ -136,14 +136,20 @@ public class Keyword {
 	}
 
 	public void addTerm(Term term) {
+		term.setKeyword(this);
 		getTerms().add(term);
 	}
+	
+	public void removeTerm(Term term) {
+		getTerms().remove(term);
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Keyword [id=" + id + ", key=" + key + ", description=" + description + ", version=" + version + "]";
+		return "\nKeyword [id=" + id + ", key=" + key + ", description=" + description + ", version=" + version + "]";
 	}
 	
 }

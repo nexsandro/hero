@@ -4,6 +4,7 @@
 package br.com.jlabs;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.hibernate.CallbackException;
@@ -113,7 +114,8 @@ public class EventInterceptor implements Interceptor {
 	 */
 	public boolean onFlushDirty(Object arg0, Serializable arg1, Object[] arg2, Object[] arg3, String[] arg4,
 			Type[] arg5) throws CallbackException {
-		System.out.println("onFlushDirty: " + arg0);
+		System.out.println("onFlushDirty: " + arg0 + ", arg1: " + arg1 + ", arg2: {" + Arrays.toString(arg2) + "}, arg3: " + arg3 + ", arg4: " + arg4);
+		
 		return false;
 	}
 
